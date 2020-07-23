@@ -2,15 +2,26 @@ package com.example.detectvolumeinsideservice
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.provider.Settings
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var settingsContentObserver: SettingsContentObserver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Endless Service"
+        settingsContentObserver = SettingsContentObserver(this, Handler())
+
+        applicationContext.contentResolver.registerContentObserver(
+            Settings.System.CONTENT_URI,
+            true,
+            settingsContentObserver
+        )
 
         findViewById<Button>(R.id.btnStartService).let {
             it.setOnClickListener {
